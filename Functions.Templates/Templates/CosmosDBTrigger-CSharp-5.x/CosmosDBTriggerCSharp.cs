@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Microsoft.Azure.Documents;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
@@ -11,10 +9,11 @@ namespace Company.Function
     {
         [FunctionName("CosmosDBTriggerCSharp")]
         public static void Run([CosmosDBTrigger(
-            databaseName: "DatabaseValue",
-            collectionName: "CollectionValue",
-            ConnectionStringSetting = "ConnectionValue",
-            LeaseCollectionName = "leases")]IReadOnlyList<Document> input,
+            databaseName: "databaseName",
+            containerName: "containerName",
+            Connection = "CosmosDBConnectionSetting",
+            LeaseContainerName = "leases",
+            CreateLeaseContainerIfNotExists = true)]IReadOnlyList<ToDoItem> input,
             ILogger log)
         {
             if (input != null && input.Count > 0)
@@ -23,5 +22,11 @@ namespace Company.Function
                 log.LogInformation("First document Id " + input[0].Id);
             }
         }
+    }
+
+    public class ToDoItem
+    {
+        public string Id { get; set; }
+        public string Description { get; set; }
     }
 }
